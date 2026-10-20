@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "todo",
+  "title": "Interactive To-Do List",
+  "description": "Build a small app. Understand every moving part.",
+  "contract": "Edit only index.html, app.js and style.css in codesense-lab. Use one visible text input labelled Task, one native button named Add Task, and one ul or ol labelled Tasks (aria-label is supported). IDs and JavaScript variable names are your choice. Start with an empty list. Load app.js using a script tag with src=app.js; no inline scripts, modules, imports, external resources, or inline event handlers. The runner loads app.js after parsing the document and fires DOMContentLoaded. Behaviors must be synchronous. Tests model DOM visibility, not browser layout.",
+  "milestones": [
+    {
+      "id": "html-structure", "title": "Give your idea a structure", "goal": "Build an accessible interface with a task input, an Add Task button, and a task list.",
+      "concepts": ["Semantic HTML", "DOM structure", "HTML attributes", "Accessible labels"],
+      "acceptanceCriteria": ["One visible native text input has the accessible name Task.", "One visible native button has the accessible name Add Task.", "One visible native ul or ol has the accessible name Tasks.", "The task input has an associated label or aria-label.", "Controls retain their native semantic roles and the task list starts empty."],
+      "expectedBehaviors": ["Assistive technology can identify each control by name and role.", "A learner can focus the enabled input and button."],
+      "testIds": ["input", "button", "list", "accessible-label", "semantics"],
+      "hints": ["How would someone who cannot see the screen know what each control is for?", "Compare the purpose of each element with its native HTML meaning. How is your input associated with its visible label?", "A label names a control; a placeholder is only a temporary example. A native button supplies interaction semantics, and a native list groups related items. The task contract describes the accessible names the checks look for."],
+      "question": "Why does the task input need an accessible label, and why use native button and list elements?",
+      "rubric": ["A label gives a control a persistent accessible name.", "Native elements communicate roles to assistive technology and support expected interaction."],
+      "assessment": [
+        {"prompt": "What does a label provide that a placeholder does not?", "options": ["Automatic validation", "A persistent accessible name for the control", "A CSS layout rule"], "answer": 1},
+        {"prompt": "Why choose native button and list elements?", "options": ["They communicate roles and expected interaction", "They always look identical in every browser", "They automatically save tasks"], "answer": 0}
+      ],
+      "referenceSolution": "html-structure",
+      "recovery": {"id": "html-description", "goal": "Add visible help text and connect it to the Task input with aria-describedby. The help must contain at least ten non-whitespace characters.", "testIds": ["description"]}
+    },
+    {
+      "id": "add-task", "title": "Make something happen", "goal": "Turn a typed task into a visible list item when Add Task is clicked.",
+      "concepts": ["Event listeners", "DOM manipulation", "Creating elements", "Updating content", "Input handling"],
+      "acceptanceCriteria": ["Clicking Add Task inserts one visible native list item.", "Its text matches the trimmed task text.", "The input clears after adding a task.", "Empty and whitespace-only entries add nothing.", "New tasks preserve earlier items in order."],
+      "expectedBehaviors": ["Add Read a chapter, then Practice JavaScript; both remain visible.", "Clicking Add Task with only spaces leaves the list unchanged."],
+      "testIds": ["adds-item", "task-text", "clears-input", "rejects-blank", "preserves-items"],
+      "hints": ["What changes should a person see after pressing Add Task? Which action begins that change?", "Think about the difference between making an element in memory and making it part of the visible page. Which step might be missing?", "An event listener responds to a user action. Creating an element produces a detached object; inserting it into the list makes it part of the page. Validate trimmed input before changing the list, then clear the input after success."],
+      "question": "What is the difference between creating a DOM element and inserting it into the document? Why validate input first?",
+      "rubric": ["Creating an element produces a detached node.", "Inserting connects it to the document so it can appear.", "Trim and reject blank input before inserting an item."],
+      "assessment": [
+        {"prompt": "A newly created element is not visible. What is missing?", "options": ["Another variable name", "A connection to the document through insertion", "A second click handler"], "answer": 1},
+        {"prompt": "When should whitespace-only input be rejected?", "options": ["After inserting an empty item", "Only after reloading", "Before changing the list"], "answer": 2}
+      ],
+      "referenceSolution": "add-task",
+      "recovery": {"id": "enter-task", "goal": "Make pressing Enter in the Task input add exactly one task, clear the input, reject blank input, and preserve earlier tasks. Keep clicking Add Task working.", "testIds": ["enter-adds", "enter-clears", "enter-rejects-blank", "enter-preserves"]}
+    }
+  ],
+  "planned": ["Complete and delete tasks", "Filter All, Active and Completed"]
+}

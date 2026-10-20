@@ -1,0 +1,34 @@
+const test=require('node:test');const assert=require('node:assert/strict');
+const {CustomProjectStore,customStatus,parseReview,CUSTOM_KEY}=require('../dist/services/CustomProjectStore.js');
+const {validateMessage}=require('../dist/services/messages.js');
+const roadmap=title=>({title,milestones:Array.from({length:3},(_,i)=>({title:`Step ${i+1}`,goal:'Build a login form',concepts:['Form semantics'],expected_behaviors:['Fields are labeled'],steps:['Add a form'],acceptance_criteria:['Labels are visible']}))});
+const advisory=()=>({review_summary:'The input labeling needs another look.',satisfied:[],potential_issues:['The input may need a label.'],observations:[{observation:'One input is present.',evidence:'Visible in the supplied snippet.'}],cannot_verify:['Other files are unknown.'],next_actions:['Inspect the label.','Test the form manually.'],verification_status:'unverified'});
+const storage=()=>{const data={'codesense.passport.v1':{guided:'untouched'}};return{data,get:k=>data[k],update:async(k,v)=>{data[k]=structuredClone(v);}};};
+test('advisory reviews and self-reported progress persist separately for each project and milestone',async()=>{
+  const saved=storage();let store=new CustomProjectStore(saved);await store.add(roadmap('A'));const first=store.active().id;
+  assert.equal(customStatus(store.active().entries[0]),'Not Started');await store.resume();
+  assert.equal(customStatus(store.active().entries[0]),'In Progress');
+  await store.review(advisory());assert.equal(customStatus(store.active().entries[0]),'Review Requested');
+  await assert.rejects(store.selfReport(false),/Review/);await store.selfReport(true);
+  assert.equal(customStatus(store.active().entries[0]),'Self-Reported Complete');
+  await store.select(1);assert.equal(customStatus(store.active().entries[1]),'In Progress');
+  await store.add(roadmap('B'));await store.resume();await store.review(undefined,'AI Code Review unavailable.');
+  assert.equal(store.active().entries[0].reviewAttempts,1);assert.equal(store.active().entries[0].reviews[0].result,undefined);
+  store=new CustomProjectStore(saved);assert.equal(store.active().title,'B');await store.resume(first);
+  assert.equal(store.active().entries[0].reviewAttempts,1);assert.equal(store.active().entries[0].reviews[0].result.verification_status,'unverified');
+  assert.ok(store.active().entries[0].selfReportedCompleteAt);assert.equal(store.active().entries[1].reviewAttempts,undefined);
+  assert.deepEqual(saved.data['codesense.passport.v1'],{guided:'untouched'});
+  assert.equal(JSON.stringify(saved.data[CUSTOM_KEY]).includes('<form><input></form>'),false);
+});
+test('review responses and messages reject false verification, oversized content and absent consent state',()=>{
+  assert.throws(()=>parseReview({...advisory(),verification_status:'verified'}));
+  assert.throws(()=>parseReview({...advisory(),next_actions:['one']}));
+  assert.throws(()=>parseReview({...advisory(),potential_issues:['x'.repeat(401)]}));
+  assert.equal(validateMessage({type:'customReview',contextMode:'none'}),undefined);
+  assert.equal(validateMessage({type:'customReview',contextMode:'workspace'}),undefined);
+  assert.deepEqual(validateMessage({type:'customReview',contextMode:'selection',code:'ignored'}),{type:'customReview',contextMode:'selection'});
+  assert.equal(validateMessage({type:'customComplete',criteriaReviewed:false}),undefined);
+  assert.deepEqual(validateMessage({type:'customComplete',criteriaReviewed:true}),{type:'customComplete',criteriaReviewed:true});
+  assert.equal(validateMessage({type:'customQuestion',refresh:'true'}),undefined);
+  assert.deepEqual(validateMessage({type:'customQuestion',refresh:true}),{type:'customQuestion',refresh:true});
+});

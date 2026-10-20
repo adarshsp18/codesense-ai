@@ -1,0 +1,21 @@
+{
+  "name": "codesense-ai-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "extension",
+    "test-runner"
+  ],
+  "scripts": {
+    "build": "npm run compile --workspace extension",
+    "test": "npm run build && node --test test-runner/tests/*.test.cjs extension/tests/*.test.cjs",
+    "test:seeded": "node --test test-runner/tests/acceptance.test.cjs",
+    "package": "npm run build && node scripts/package.cjs"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^4.0.0"
+  }
+}

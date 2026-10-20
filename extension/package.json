@@ -1,0 +1,24 @@
+{
+  "name": "codesense-ai", "displayName": "CodeSense AI", "description": "Don't Just Build It. Understand It. A guided web development mentor.",
+  "version": "0.1.0", "publisher": "codesense-student-team", "license": "MIT",
+  "engines": {"vscode": "^1.95.0"}, "categories": ["Education"],
+  "main": "./dist/extension.js", "activationEvents": ["onView:codesense.mentor"],
+  "capabilities": {"untrustedWorkspaces": {"supported": "limited", "description": "Trust this workspace before creating or running the controlled demo."}, "virtualWorkspaces": false},
+  "contributes": {
+    "commands": [
+      {"command": "codesense.open", "title": "CodeSense AI: Open Mentor"},
+      {"command": "codesense.startGuided", "title": "CodeSense AI: Start Guided To-Do Project"},
+      {"command": "codesense.passport", "title": "CodeSense AI: Learning Passport"}
+    ],
+    "viewsContainers": {"activitybar": [{"id": "codesense", "title": "CodeSense AI", "icon": "media/icon.svg"}]},
+    "views": {"codesense": [{"id": "codesense.mentor", "name": "Your learning studio", "type": "webview"}]},
+    "configuration": {"title": "CodeSense AI", "properties": {
+      "codesense.aiEnabled": {"type": "boolean", "default": false, "description": "Enable optional backend AI requests. Off means zero backend or AI requests."},
+      "codesense.backendUrl": {"type": "string", "default": "http://127.0.0.1:8000", "description": "Loopback-only FastAPI backend URL."},
+      "codesense.nodePath": {"type": "string", "default": "node", "scope": "machine", "description": "Node.js 22.12+ executable used for the separate demo test process."}
+    }}
+  },
+  "scripts": {"compile": "tsc -p . && node ../scripts/stage.cjs", "vscode:prepublish": "npm run compile"},
+  "dependencies": {"jsdom": "^26.1.0", "@testing-library/dom": "^10.4.0"},
+  "devDependencies": {"typescript": "^5.9.3", "@types/node": "^22.18.0", "@types/vscode": "^1.95.0"}
+}

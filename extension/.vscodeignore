@@ -1,0 +1,6 @@
+src/**
+tests/**
+tsconfig.json
+**/*.map
+runtime/test-runner/tests/**
+runtime/test-runner/fixtures/seeded-defects/**

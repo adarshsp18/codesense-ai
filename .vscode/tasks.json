@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [{
+    "label": "Build CodeSense AI", "type": "shell", "command": "npm",
+    "args": ["run", "build"], "windows": {"command": "npm.cmd"},
+    "problemMatcher": "$tsc", "group": "build"
+  }]
+}

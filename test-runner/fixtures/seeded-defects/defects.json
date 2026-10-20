@@ -1,0 +1,12 @@
+[
+  {"id":"missing-handler", "file":"app.js", "from":"button.addEventListener('click', addTask);", "to":"// Missing listener", "milestone":"add-task", "detects":"adds-item"},
+  {"id":"detached-item", "file":"app.js", "from":"list.appendChild(item);", "to":"// Item never inserted", "milestone":"add-task", "detects":"adds-item"},
+  {"id":"uncleared-input", "file":"app.js", "from":"input.value = '';", "to":"// Input not cleared", "milestone":"add-task", "detects":"clears-input"},
+  {"id":"blank-accepted", "file":"app.js", "from":"if (!text) return;", "to":"// No validation", "milestone":"add-task", "detects":"rejects-blank"},
+  {"id":"lost-history", "file":"app.js", "from":"list.appendChild(item);", "to":"list.replaceChildren(item);", "milestone":"add-task", "detects":"preserves-items"},
+  {"id":"wrong-text", "file":"app.js", "from":"item.textContent = text;", "to":"item.textContent = 'Wrong text';", "milestone":"add-task", "detects":"task-text"},
+  {"id":"missing-label", "file":"index.html", "from":"<label for=\"new-task\">Task</label>", "to":"", "milestone":"html-structure", "detects":"accessible-label"},
+  {"id":"wrong-button", "file":"index.html", "from":"<button type=\"button\">Add Task</button>", "to":"<div role=\"button\" aria-label=\"Add Task\">Add Task</div>", "milestone":"html-structure", "detects":"button"},
+  {"id":"wrong-list", "file":"index.html", "from":"<ul aria-label=\"Tasks\"></ul>", "to":"<div role=\"list\" aria-label=\"Tasks\"></div>", "milestone":"html-structure", "detects":"list"},
+  {"id":"hidden-item", "file":"app.js", "from":"item.textContent = text;", "to":"item.textContent = text; item.hidden = true;", "milestone":"add-task", "detects":"adds-item"}
+]
