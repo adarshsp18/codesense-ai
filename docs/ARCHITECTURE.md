@@ -6,7 +6,7 @@
 flowchart LR
     Editor[Real demo files] -->|saved snapshot| Host[VS Code extension host]
     UI[Webview sidebar] -->|validated action| Host
-    Host -->|explicit reviewed-code confirmation| Worker[Separate Node worker]
+    Host -->|Mode B reviewed-code confirmation| Worker[Separate Node worker]
     Worker --> Tests[jsdom + curated checks]
     Tests -->|structured results| Host
     Host --> Store[workspaceState Passport]
@@ -17,7 +17,7 @@ flowchart LR
     Host --> UI
 ```
 
-Offline mode never instantiates an AI request. The backend is optional: curriculum, scripted hints, quizzes, test execution and persistence all live in the extension. `shared/guided-projects.json` is the source of truth. The build copies it and the runner into `extension/runtime`; do not edit those generated copies.
+Offline mode never instantiates an AI request. The backend is optional for Mode B: guided curriculum, scripted hints, quizzes, test execution and persistence all live in the extension. [shared/guided-projects.json](../shared/guided-projects.json) is the guided source of truth. The build copies it and the runner into `extension/runtime`; do not edit those generated copies. Mode A's saved-project navigation and generic hints also work offline, but new AI roadmaps, advisory reviews and AI explanation evaluation require the separately configured backend and provider access. Custom question preparation requires the backend and extension AI setting, but generates its question deterministically without a provider call.
 
 Mode A stores multiple roadmaps and milestone histories in workspace state. Learners explicitly approve one selected snippet or current file before code is sent to the backend. `CodeContext.ts` restricts paths, size and common secrets; FastAPI checks consent and secrets again. `POST /mentor/review` returns schema-validated advisory observations, unknowns and next actions with `verification_status` fixed to `unverified`. It never invokes the guided test runner. Mode B's authored To-Do List is the only path that can record verified implementation checks.
 
@@ -33,7 +33,7 @@ Mode A stores multiple roadmaps and milestone histories in workspace state. Lear
 
 ## Result authority
 
-**Verified tests** are the reviewed predefined suites documented in TEST_COVERAGE. Only these set implementation correctness. **Provisional checks** would require explicit review before gaining this authority; V1 has no provisional execution path. **Exploratory AI suggestions** (custom roadmap acceptance criteria and conceptual feedback) never set implementation results. A test passing is evidence about the tested requirements, not proof that the application is universally correct.
+**Verified tests** are the developer-reviewed predefined suites documented in [test coverage](TEST_COVERAGE.md). Only these set implementation verification status. **Provisional checks** would require explicit review before gaining this authority; V1 has no provisional execution path. **Exploratory AI suggestions** (custom roadmap acceptance criteria, advisory reviews and conceptual feedback) never set implementation results. Custom self-reported completion also remains unverified. A test passing is evidence about the tested requirements, not proof that the application is universally correct.
 
 ## Local persistence schema
 
@@ -54,7 +54,7 @@ milestones[id]:
 
 `codesense.customProjects.v1` stores up to 20 full custom roadmaps, each with a stable ID, learning level when known, current milestone, advisory review attempts, hints, explanations, assistance, conceptual outcomes and self-reported progress. `activeProjectId` selects the project shown in the workspace; an immutable roadmap milestone index associates its evidence. The older `codesense.roadmap` value is read for migration and never deleted or overwritten. A Passport summary cannot reconstruct a missing roadmap. Raw learner source and API keys are not persisted in Passport; custom explanation text and model feedback are retained in the custom-project record. Explicitly shared selections may be reflected in generated feedback. Data is local but not encrypted by this application. Normal VS Code profile storage rules apply. No cloud sync key is registered.
 
-Classification is derived, not a made-up percentage:
+Mode B classification is derived, not a made-up percentage. These labels do not apply to custom implementations and do not establish general mastery:
 
 1. Revealed + currently passing implementation + currently passing recovery + post-reveal conceptual pass → **Recovered Understanding**.
 2. Any other revealed state → **Assisted**.
@@ -70,4 +70,4 @@ Neither `node:vm` nor jsdom provides a security boundary against malicious JavaS
 
 ## Extending the prototype
 
-Add a milestone schema, authored reference, deterministic requirements and checks, seeded defects, conceptual rubric and recovery checks together. Review requirement-to-test coverage before labelling a suite verified. Do not attach arbitrary AI-generated tests to completion. See IMPLEMENTATION_STATUS for the finals/V2 boundary.
+Add a milestone schema, authored reference, deterministic requirements and checks, seeded defects, conceptual rubric and recovery checks together. Review requirement-to-test coverage before labelling a suite verified. Do not attach arbitrary AI-generated tests to completion. See [implementation status](IMPLEMENTATION_STATUS.md) for the finals/V2 boundary.

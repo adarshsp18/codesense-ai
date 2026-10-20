@@ -1,6 +1,24 @@
 # Implementation status — 20 October 2026
 
-Status distinguishes executable evidence from features needing a live UI or provider check. This is V1 for shortlisting, not the full product.
+Status distinguishes automated evidence, observed manual demonstrations and remaining limitations. This is V1 for NEXUS 2026 Round 1 shortlisting, not the full product.
+
+## Current evidence summary
+
+The latest reported automated results remain **68/68 Node tests**, **211/211 Python tests** and **5/5 backend smoke checks**, with TypeScript compilation passing. They were not rerun during this documentation audit; provider tests use mocks.
+
+Subsequent manual demonstrations in the VS Code Extension Development Host covered:
+
+- Mode A roadmap generation and milestone navigation.
+- Multiple custom projects and navigation.
+- Progressive live Gemini hints and selected-code consent.
+- Live advisory AI Code Review and free-text conceptual assessment.
+- Self-reported milestone completion.
+- Learning Passport persistence after reload.
+- Mode B guided test execution, including expected failures.
+
+These observations supersede the earlier pending native-activation, live-workflow and reload-persistence claims. They do not establish an automated host-test pass or completion of every item in the [manual checklist](MANUAL_VERIFICATION.md). A clean VSIX installation was not manually verified. Custom implementation remains unverified; successful live interactions do not guarantee every Gemini request; no controlled study or pilot has established learning improvement.
+
+The GitHub repository contains source only. Use the [clone/build/F5 instructions](../README.md#start-here--windows-powershell), or generate a VSIX locally with `npm.cmd run package`. The older package checks below are historical and do not verify a package of the current source.
 
 ## Mode A advisory code review update (20 October 2026)
 
@@ -8,7 +26,7 @@ The active custom milestone now offers **Review My Code** for one selected snipp
 
 Custom milestones now record Not Started, In Progress, Review Requested and Self-Reported Complete, separately from conceptual rubric outcomes and the unchanged automated-verification-unavailable notice. Self-report requires acknowledging the provisional acceptance criteria. The latest review issue can focus a later hint or deterministic concept question; refocusing can also use earlier rubric gaps or no-code hints. The fixed assessment rubric and Level 1/2 no-code validation remain intact. Existing project IDs plus immutable roadmap milestone indexes associate evidence across project switches and reloads. Guided storage, curriculum, test runner and solution recovery were not changed.
 
-Current verification: `npm.cmd test` compiled TypeScript/staged assets and passed **68/68 Node tests**; `python -m pytest backend/tests -q` passed **211/211 Python tests** with one installed Starlette/httpx deprecation warning. `python scripts/smoke_backend.py` passed five real-server checks (health, guided project, offline hint, missing-key roadmap and startup). Review tests use a mocked provider; the native VS Code consent dialog, 300–400px rendering, theme appearance and live Gemini review need manual verification. The VSIX was not rebuilt.
+Latest reported automated verification: `npm.cmd test` compiled TypeScript/staged assets and passed **68/68 Node tests**; `python -m pytest backend/tests -q` passed **211/211 Python tests** with one installed Starlette/httpx deprecation warning. `python scripts/smoke_backend.py` passed **5/5** real-server checks (health, guided project, offline hint, missing-key roadmap and startup). Review tests use a mocked provider. Subsequent manual demonstrations covered selected-code consent and live Gemini review; comprehensive 300–400px rendering, theme and accessibility checks remain separate. The VSIX was not rebuilt.
 
 ## Final project-management update (20 October 2026)
 
@@ -16,7 +34,7 @@ The existing multi-project store now has a Home **My Projects** list, active-pro
 
 The roadmap endpoint now rejects clearly unrelated or ambiguous ideas before provider generation with a fixed, sanitized prompt to describe a web interface. Accepted roadmaps retain the existing API schema and authentication safety check. This local relevance gate is conservative and cannot understand every possible project description.
 
-Verification: TypeScript compilation and the complete **64-test Node suite** passed; the complete **195-test Python suite** passed with one installed Starlette/httpx deprecation warning. Local TestClient smoke checks returned health 200, guided project 200 and unrelated idea 422. Native VS Code UI behavior, actual workspace Memento data and live Gemini generation were not exercised in this update. The VSIX was not rebuilt.
+Historical verification at this stage: TypeScript compilation and the complete **64-test Node suite** passed; the complete **195-test Python suite** passed with one installed Starlette/httpx deprecation warning. These counts were superseded by 68/68 and 211/211 above. Local TestClient smoke checks returned health 200, guided project 200 and unrelated idea 422. Native VS Code UI behavior, actual workspace Memento data and live Gemini generation were not exercised at that stage; later manual demonstrations are recorded above. The VSIX was not rebuilt.
 
 ## Mode A vertical slice (19 October 2026)
 
@@ -43,14 +61,15 @@ Implemented incrementally on the existing extension and FastAPI backend for the 
 - Full offline controller flow including real child tests, source edits, failure/pass, hints, assessment, reveal, recovery and reload from persisted JSON-backed storage.
 - FastAPI endpoints, Pydantic input validation, no-key behavior, hint rejection/retry/fallback, schema-validated roadmaps, evidence-based rubric assessment and error sanitization (AI provider mocked).
 - Real Uvicorn startup and HTTP health/curriculum/offline-hint/missing-key smoke checks.
-- Installable VSIX, extracted to a temporary directory outside the repository; its shipped runner passed the correct reference using only packaged dependencies (2.97 MB archive).
+- Historical package check: an earlier VSIX was extracted outside the repository and its shipped runner passed the correct reference using only packaged dependencies. This was not a clean VS Code installation test, and the archive is not included in GitHub or current-source verification.
 
 ## Implemented but not fully verified
 
-- Before this update, one minimal structured Gemini request to `gemini-3.8-flash` succeeded using the configured account; `gemini-2.5-flash` returned a specific new-user restriction. Free-tier eligibility was not established. The new full custom workflow and OpenAI path have not been exercised live in VS Code. Current AI behavior tests use mocks, not real provider calls.
-- Visual appearance, keyboard/screen-reader behavior, F5 onboarding and full interaction in a real VS Code GUI require the manual checklist. Automated webview/controller checks are not a visual review.
-- Actual VS Code Memento storage across GUI reloads requires manual confirmation; storage reconstruction is tested with the same interface and disk-backed test storage.
-- Native host launch was attempted twice. The diagnostic run was blocked by VS Code's `vscode-updating` mutex and exited with “Code is currently being updated. Please wait for the update to complete before launching.” No `host-test-result.json` was produced. Activation in a real host is therefore **not claimed as passed**. Finish the existing VS Code update, then follow MANUAL_VERIFICATION; no updater or existing user VS Code process was terminated.
+- Live Gemini roadmap, hint, review and conceptual-assessment interactions were manually demonstrated. Account/model availability, quotas and response quality remain variable; free-tier eligibility and the optional OpenAI path have not been established by those demonstrations. Automated AI behavior tests use mocks.
+- Comprehensive sidebar widths, themes, zoom, keyboard and screen-reader behavior still need the [manual checklist](MANUAL_VERIFICATION.md). Automated webview/controller checks are not a visual or accessibility review.
+- Learning Passport persistence after reload was manually observed. This does not establish every migration, damaged-record or cross-workspace case in the native host; automated storage reconstruction tests cover additional cases.
+- Earlier automated native-host launches were blocked by VS Code's update mutex and produced no `host-test-result.json`. Later manual Extension Development Host demonstrations establish observed activation and interaction, but no subsequent automated host-test pass is claimed.
+- A clean VSIX installation has not been manually verified. Local package extraction/runner evidence does not cover installation or activation.
 
 ## Partial / deliberately limited
 
@@ -62,21 +81,23 @@ Implemented incrementally on the existing extension and FastAPI backend for the 
 
 ## Planned for finals (V1.5)
 
-Editable/personalized roadmaps, broader context selection and concept rubrics, reviewed reusable custom test templates, more guided projects, completed/delete/filter milestones, improved analytics, and a real 3–5 classmate pilot. No pilot results exist yet.
+Editable roadmaps and richer personalization beyond the implemented idea/learning-level generation, broader context selection and concept rubrics, reviewed reusable custom test templates, more guided projects, completed/delete/filter milestones, improved analytics, and a real 3–5 classmate pilot. No pilot results exist yet.
 
 ## Planned for full V2
 
 Trustworthy arbitrary-project test generation, framework-specific learning, architecture-aware mentoring, adaptive knowledge graphs, instructor dashboards and strong cloud sandbox execution.
 
-## Verification log
+## Historical verification log — earlier V1 / 19 October checks
 
-- Environment: Windows, Node 24.18.0, npm 11.16.0, portable CPython 3.12.15, VS Code 1.139.0.
-- Current incremental compile: `node node_modules/typescript/bin/tsc -p extension` passed. Full Node run: `node --test --test-concurrency=1 test-runner/tests/*.test.cjs extension/tests/*.test.cjs` - **54 passed** (48 previous and 6 UI refinement cases), including offline guided controller, real jsdom seeded defects/recovery, genuine worker timeout, custom controller, storage, consent boundaries and webview rendering. Suites ran serially to avoid the previously observed worker contention; existing verified suites were not edited.
-- `python -m pytest backend/tests -q`: **134 passed** (107 previous and 27 new custom cases). One installed Starlette/httpx deprecation warning; no failing tests. New cases cover active-milestone context, consent, secret/length rejection, Levels 1?2 enforcement, retry/fallback, explicit questions/rubrics, evidence validation, quota/network/malformed assessment failures and local-only access.
+These earlier results are retained as history, not current suite totals. See the current evidence summary above.
+
+- Reported environment: Windows, Node 24.18.0, npm 11.16.0, portable CPython 3.12.15, VS Code 1.139.0.
+- Incremental compile at that stage: `node node_modules/typescript/bin/tsc -p extension` passed. Full Node run: `node --test --test-concurrency=1 test-runner/tests/*.test.cjs extension/tests/*.test.cjs` - **54 passed** (48 previous and 6 UI refinement cases), including offline guided controller, real jsdom seeded defects/recovery, genuine worker timeout, custom controller, storage, consent boundaries and webview rendering. Suites ran serially to avoid the previously observed worker contention; existing verified suites were not edited.
+- `python -m pytest backend/tests -q`: **134 passed** (107 previous and 27 new custom cases). One installed Starlette/httpx deprecation warning; no failing tests. New cases cover active-milestone context, consent, secret/length rejection, Levels 1–2 enforcement, retry/fallback, explicit questions/rubrics, evidence validation, quota/network/malformed assessment failures and local-only access.
 - `python scripts/smoke_backend.py`: all five real-server checks passed; server stopped afterward.
-- npm dependency audit after updating the packaging tool: zero reported vulnerabilities.
+- npm dependency audit at that stage after updating the packaging tool: zero reported vulnerabilities. This is a historical result, not a current dependency-security assessment.
 - Earlier V1 package verification: `npm.cmd run package` and `node scripts/verify-package.cjs` passed. The VSIX was not regenerated for the Mode A update; use F5/source development host. The first archive omitted dependencies; the packaging script was fixed, rebuilt and its self-contained runner verified successfully.
-- Native VS Code host checks: blocked by the installed editor's active update, as described above. CLI exit code was not treated as verification evidence.
+- Automated native VS Code host checks at that stage: blocked by the installed editor's active update. CLI exit code was not treated as verification evidence. Later manual demonstrations are recorded separately above.
 
 No generated metrics, fake test passes, fabricated pilot observations, or claims of general mastery are included.
 
@@ -89,4 +110,4 @@ Presentation-only state keeps disclosures, context controls, focused controls an
 
 Validation: TypeScript compilation passed; the complete Node suite passed 54/54 serially; Python passed 134/134 with the existing Starlette/httpx deprecation warning. The six added DOM tests cover home action order and labels, diagnostics, busy-round-trip focus/context, selection and disclosure isolation, explain-back progression, and Passport evidence/assistance semantics.
 
-No browser or native VS Code surface was connected for visual review. Real 300-400px sidebar rendering, light/dark/high-contrast themes, 200% zoom, keyboard/screen-reader operation and live consent dialogs remain manual checks. DOM tests do not establish pixel layout, contrast or native focus behavior. The existing packaged VSIX was not regenerated; inspect this source version through F5.
+At this earlier stage, no browser or native VS Code surface was connected for visual review. Subsequent manual demonstrations included native selected-code consent and the interactions listed above. Comprehensive 300–400px sidebar rendering, light/dark/high-contrast themes, 200% zoom and keyboard/screen-reader operation remain rehearsal checks. DOM tests do not establish pixel layout, contrast or native focus behavior. The existing packaged VSIX was not regenerated; inspect this source version through F5.

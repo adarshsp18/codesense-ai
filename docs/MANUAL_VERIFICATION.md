@@ -1,8 +1,16 @@
 # Final UI rehearsal in VS Code
 
-Automated jsdom webview tests cannot establish that every control looks correct in a real VS Code theme. Perform this checklist before presenting, even when host activation tests pass.
+Automated jsdom webview tests cannot establish that every control looks correct in a real VS Code theme. Use this checklist for presentation rehearsal; it is not a record that every item below has passed.
 
-On the build machine, the native launch attempt reported **“Code is currently being updated. Please wait for the update to complete before launching.”** Finish the existing VS Code update normally before running F5 or the host test. This build did not terminate updater processes or claim a native host pass.
+## Observed manual demonstrations
+
+Subsequent Extension Development Host demonstrations covered Mode A roadmap generation and milestone navigation, multiple custom projects and navigation, progressive live Gemini hints, selected-code consent, live advisory AI Code Review, free-text conceptual assessment, self-reported milestone completion, Learning Passport persistence after reload, and Mode B guided test execution including expected failures.
+
+These observations supersede the earlier claim that native activation still needed confirmation after an editor-update block. They are manual evidence, not a successful automated host test or a clean VSIX installation check. No claim is made that every Gemini request succeeds, custom implementations pass automated tests, or a controlled study proved learning improvement. See [implementation status](IMPLEMENTATION_STATUS.md) for evidence boundaries.
+
+## Rehearsal checklist
+
+Start with the [source setup instructions](../README.md#start-here--windows-powershell). GitHub does not include a prebuilt VSIX. The broader checks below remain useful even where related interactions have been demonstrated.
 
 1. Run `npm.cmd ci` then `npm.cmd run build` from the repository root. Open the root in VS Code; choose **Run CodeSense AI**, press F5. In the new window run **CodeSense AI: Open Mentor**. Confirm branding, tab navigation and readable wrapping at a narrow sidebar width.
 2. With `codesense.aiEnabled=false` and no backend, start the guided project. Confirm the real index.html opens and the other file buttons work. Run starter tests; confirm failures are genuine. Verify the execution modal names the controlled demo and explains its isolation limit. Cancel once and confirm no result is invented.
@@ -17,7 +25,7 @@ On the build machine, the native launch attempt reported **“Code is currently 
 
 ## Automated real host command
 
-The host test creates its own demo in `.tools/host-workspace` and checks activation, all three commands, sidebar opening, file creation, opening the real editor, preserving edits on resume and Passport navigation. It writes `host-test-result.json` only after all assertions pass.
+The earlier automated host attempt was blocked by a VS Code update and produced no result file; no later automated host pass is claimed. The host test creates its own demo in `.tools/host-workspace` and checks activation, all three commands, sidebar opening, file creation, opening the real editor, preserving edits on resume and Passport navigation. It writes `host-test-result.json` only after all assertions pass.
 
 ```powershell
 New-Item -ItemType Directory -Force .tools\host-workspace | Out-Null
@@ -26,14 +34,14 @@ Get-Content .tools\host-workspace\host-test-result.json
 ```
 
 The command disables workspace-trust onboarding only in the isolated test profile and uses bundled trusted fixtures. Normal use retains workspace-trust checks. A CLI exit alone does not prove host-test success: inspect the result file and extension-host logs. Native GUI testing may be unavailable in headless/restricted environments.
-## UI refinement: manual review still required
+## UI refinement: broader visual and accessibility review
 
 Run the source development host with F5. These checks are not claimed as passed by the DOM tests:
 
 - Set the sidebar to 300px, 350px and 400px, then widen it. Check wrapping, primary-action visibility and absence of horizontal scrolling on Home, custom roadmap/workspace, guided workspace and Passport.
 - Review light, dark and high-contrast VS Code themes, plus 200% zoom. Check text, placeholders, separators, disabled buttons and visible focus. Colors should follow the editor theme.
 - Use Tab, Shift+Tab, Enter and Space through Home, milestone navigation, native disclosure summaries, radio choices, hints and explain-back. Confirm focus survives a hint request and moves to the heading on navigation.
-- Verify the project prompt and one Generate roadmap action lead Home; Resume milestone and guided To-Do appear below. AI enabled describes configuration, not a successful live connection.
+- Verify Home shows Create New Project, Generate roadmap, Resume Active Project when available, My Projects with open/resume actions, and the guided To-Do option. AI enabled describes configuration, not a successful live connection.
 - In custom mode, expand Switch milestone, Suggested steps, Proposed acceptance criteria and Code context. Confirm disclosure state persists during requests. Cancel and approve real code-sharing dialogs; the existing consent requirement must remain intact.
 - In guided mode, run failing checks and read the visible failure diagnostics. Passing checks should be collapsed separately. After a current code pass, explain-back should open naturally. Reference solution stays secondary; reveal and recovery still work.
 - Request short and long hints. Confirm the reserved output region reduces movement and long text remains fully readable. Check working, disabled, error and empty states with a stopped backend.

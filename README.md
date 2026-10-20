@@ -3,45 +3,64 @@
 **Don't Just Build It. Understand It.**  
 NEXUS Hackathon 2026 · PS2 — AI Coding Mentor That Teaches, Not Just Generates
 
-CodeSense AI is a VS Code learning mentor for students who need to understand the code they build, not just receive generated solutions. It addresses NEXUS 2026 Problem Statement 2 with two paths: **Mode A** turns a learner's web-project idea into saved milestones, consent-based mentoring and advisory code review; **Mode B** teaches an authored To-Do List through real checks, offline hints and recovery tasks. Both paths keep implementation evidence separate from conceptual assessment. The guided cycle works without Python, a backend, an API key or an internet connection after installation.
+CodeSense AI is a VS Code learning mentor for students who can obtain generated code but need help understanding and building it themselves. Built for NEXUS 2026 Round 1, Problem Statement 2, it guides learners through milestones, progressive hints and conceptual assessments while recording their learning activity.
 
-The prototype's differentiator is that learners write in their own editor while CodeSense records how they reached an outcome. Mode A never presents AI feedback as a verified code pass. Mode B uses reviewed jsdom checks and seeded defects to support narrower, reproducible implementation claims.
+Its focus is the learning process: learners write in their own editor, explain their reasoning, and see implementation results separately from conceptual outcomes. Solution assistance is recorded rather than treated as independent completion.
+
+| Implemented mode | What learners can do | Verification boundary |
+|---|---|---|
+| **Mode A — Build Your Own** | Generate personalized AI roadmaps from a web-project idea and learning level; manage multiple projects; navigate interactive milestones; request consent-based contextual hints and advisory AI Code Review; submit free-text conceptual assessments; self-report completion; track activity in the Learning Passport. | AI review is advisory and completion is self-reported. Arbitrary custom implementations have no automated tests. |
+| **Mode B — Guided Learning** | Complete two authored To-Do List milestones with developer-reviewed jsdom tests, progressive offline hints, conceptual assessments, solution reveal and recovery tasks, and a saved Learning Passport. | Tests cover the authored DOM contract. Conceptual assessment is separate and does not prove general mastery. |
+
+The guided cycle works without Python, a backend, an API key or an internet connection after dependencies are installed and the extension is built. Live AI features require a separately configured FastAPI backend and provider access. This prototype does not establish reliable results for every AI request or measured learning improvement.
 
 **Stack:** TypeScript VS Code extension and theme-aware webview; local workspace-state records; Node.js, jsdom and DOM Testing Library for the guided runner; optional loopback FastAPI/Pydantic backend using Google's official `google-genai` SDK. Gemini is the current prototype provider; OpenAI remains configurable. See [architecture and trust boundaries](docs/ARCHITECTURE.md).
 
 ## Start here — Windows PowerShell
 
-Prerequisites: VS Code and Node.js **22.12+** (tested with Node 24.18.0). Python **3.10+** is needed only for the optional backend (tested with 3.12.15).
+Prerequisites: Git, VS Code **1.95+**, and Node.js **22.12+** (reported tested version: 24.18.0). The optional backend requires Python **3.11+** because it uses `asyncio.timeout`; Python **3.12** is recommended to match the reported 3.12.15 test environment.
 
-From this repository root:
+Clone the source, install dependencies, and build:
 
 ```powershell
+git clone https://github.com/adarshsp18/codesense-ai.git
+cd codesense-ai
 npm.cmd ci
 npm.cmd run build
 code .
 ```
 
-`npm.cmd` avoids PowerShell's `npm.ps1` execution-policy restriction. No policy change is needed.
+If already cloned, run the install/build commands from the repository root. `npm.cmd` avoids PowerShell's `npm.ps1` execution-policy restriction. No policy change is needed. On other platforms use `npm` instead of `npm.cmd`.
 
 In VS Code, open this **root folder**, select **Run CodeSense AI** in Run and Debug, then press **F5**. A separate **Extension Development Host** opens. In that window, click the CodeSense activity-bar icon or run **CodeSense AI: Open Mentor** from the Command Palette. If prompted, trust this repository only after reviewing it. Click **Start / resume guided project**.
 
-The earlier automated VS Code host launch was blocked by an editor update. Native GUI activation still needs manual confirmation. The current source passed TypeScript compilation, 68 Node tests, 211 Python tests and local backend smoke checks. The verified VSIX is supplied separately from the source archive.
+If the sidebar is narrow, drag its edge wider for the demonstration.
 
-If the sidebar is narrow, drag its edge wider. It also works at normal sidebar widths.
+### Optional: package a VSIX locally
 
-### Install the packaged prototype instead
-
-The separately supplied VSIX is self-contained; Node.js must still be installed to run guided tests. Install that verified archive without rebuilding it:
+**The GitHub repository contains source code, not a prebuilt VSIX.** After installing dependencies, the existing package script builds and stages the extension and creates the local archive:
 
 ```powershell
+npm.cmd run package
+# Optional package-content and bundled-runner verification:
+node scripts/verify-package.cjs
+# Install only after the archive has been generated locally:
 code --install-extension .\artifacts\codesense-ai-0.1.0.vsix
 ```
 
-Then open a local project folder and use the CodeSense commands. This installs locally; nothing is published to the Marketplace.
+`artifacts/` and `*.vsix` are ignored by Git. The archive includes the extension's runtime dependencies; Node.js must still be installed to run guided tests. Live AI still requires the separately configured backend below. Local installation does not publish to the Marketplace.
 
-If you received source only, run `npm.cmd ci` and `npm.cmd run package` to build a new local VSIX, then `node scripts/verify-package.cjs` to test that package. The faculty source ZIP deliberately does not contain the separately verified release VSIX.
+Package extraction/runner checks are not a clean VS Code installation test. A clean VSIX installation has **not** been manually verified.
 
-## Offline demonstration
+## Verification evidence
+
+- **Latest reported automated results:** TypeScript compilation, **68/68 Node tests**, **211/211 Python tests**, and **5/5 backend smoke checks** passed. AI provider tests use mocks. These results were not rerun during this documentation audit.
+- **Subsequent manual demonstrations in the Extension Development Host:** Mode A roadmap generation and milestone navigation; multiple custom projects and navigation; progressive live Gemini hints; selected-code consent; live advisory AI Code Review; free-text conceptual assessment; self-reported milestone completion; Learning Passport persistence after reload; and Mode B guided test execution, including expected failures.
+- **Scope:** The manual demonstrations establish observed behavior in that development host. They supersede the earlier claim that native activation still needed confirmation, but do not establish an automated host-test pass, clean VSIX installation, universal Gemini reliability, arbitrary-project implementation correctness, or learning improvement from a controlled study.
+
+See [implementation status](docs/IMPLEMENTATION_STATUS.md) for historical evidence and [manual verification](docs/MANUAL_VERIFICATION.md) for remaining rehearsal checks.
+
+## Mode B — Guided Learning: offline demonstration
 
 Keep `codesense.aiEnabled` **false** (the default). You can stop the backend and disconnect the network.
 
@@ -61,14 +80,14 @@ Use [the two-minute demo script](docs/DEMO_SCRIPT.md) for the presentation and [
 On a machine with Python installed:
 
 ```powershell
-py -3 -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend\requirements.lock.txt
 # First setup only: preserve an existing .env and its keys.
 if (!(Test-Path backend\.env)) { Copy-Item backend\.env.example backend\.env }
 code backend\.env
 ```
 
-The local `.venv` and any setup tools are ignored and must not be shared. If an environment already exists, skip creation and install the locked requirements into it.
+The command selects Python 3.12; use `py -3.11` if that is your installed supported version. The local `.venv` and any setup tools are ignored and must not be shared. If an environment already exists, confirm its Python version, skip creation and install the locked requirements into it.
 
 Edit `backend/.env` locally to select Gemini:
 
@@ -79,7 +98,7 @@ GEMINI_API_KEY=your-own-google-ai-studio-key
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-`GEMINI_MODEL` defaults to `gemini-2.5-flash` when omitted or blank. Use it if available to your configured Google AI Studio account's free tier; access and quotas are account-dependent and are not checked at startup. See Google's [model documentation](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash) and [pricing](https://ai.google.dev/gemini-api/docs/pricing). If the model is unavailable, explicitly set another model your account can use that supports structured outputs. The backend does not silently switch models or providers.
+`GEMINI_MODEL` defaults to `gemini-2.5-flash` when omitted or blank. This is the repository default, not a guarantee of account access or free-tier availability. Google's [model documentation](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash) currently restricts 2.5 access to prior users; consult it and [pricing](https://ai.google.dev/gemini-api/docs/pricing) for your account. If unavailable, explicitly set another model your account can use that supports structured outputs. Access and quotas are not checked at startup, and the backend does not silently switch models or providers.
 
 OpenAI remains optional. To use it, set these values in the same server-side file:
 
@@ -94,7 +113,7 @@ An unset `AI_PROVIDER` preserves legacy OpenAI behavior; the example file explic
 
 Gemini uses the [official Google Gen AI SDK](https://googleapis.github.io/python-genai/) with asynchronous requests and [structured JSON outputs](https://ai.google.dev/gemini-api/docs/structured-output); all responses are validated against the existing Pydantic schemas. OpenAI retains its Responses API, Pydantic schemas, and `store=False`. Both paths keep roadmap verification labels, Socratic hint validation (including no code at levels 1 and 2), and complete rubric/evidence checks. Gemini calls have a 12-second transport timeout and no automatic SDK retries; the existing hint validator may retry rejected hints once. The overall request deadline remains 35 seconds.
 
-Model access and quotas depend on the account. Automated AI tests use mocked providers; they do not establish that live requests work for a faculty member's key or model. The full interactive workflow still needs a live VS Code check.
+Model access and quotas depend on the account. Automated AI tests use mocked providers; they do not establish that live requests work for a faculty member's key or model. The manual demonstrations above included live Gemini interactions, but requests can still fail or return inadequate feedback.
 
 Start from the repository root:
 
@@ -110,11 +129,11 @@ Invoke-RestMethod http://127.0.0.1:8000/health
 
 The unchanged health response includes `ai_configured`: true means AI is enabled, `AI_PROVIDER` is supported, and the selected key is nonempty. It makes no provider request and does not validate credentials, model access, or quota. It never returns keys. `offline_guided_available` stays true regardless of AI configuration.
 
-Missing/disabled AI or an unsupported provider returns HTTP 503 for AI-only routes. Gemini rate limits, invalid credentials, unavailable models, network errors, and invalid/blocked/truncated output return sanitized HTTP 502 errors; timeouts return 504. The existing error envelope is preserved. For HTTP 400/401/403 check the key and account access; for model errors check `GEMINI_MODEL`; for quota errors wait or check your account quota. Provider response bodies and credential values are not logged or returned. Hint requests fall back to scripted hints on these failures; the offline guided cycle, recovery workflows, and Learning Passport remain available.
+Missing/disabled AI or an unsupported provider returns HTTP 503 for provider-dependent routes. The deterministic `/learning/question` route does not call the provider. Gemini rate limits, invalid credentials, unavailable models, network errors, and invalid/blocked/truncated output return sanitized HTTP 502 errors; timeouts return 504. For authentication/access messages check the key and account access; for model errors check `GEMINI_MODEL`; for quota errors wait or check your account quota. These are upstream provider failures, not raw provider HTTP statuses returned to the extension. Provider response bodies and credential values are not logged or returned. Hint requests fall back to scripted hints on these failures; the offline guided cycle, recovery workflows, and Learning Passport remain available.
 
 In VS Code Settings, enable **CodeSense: Ai Enabled** and leave **Backend Url** at `http://127.0.0.1:8000`. Restart the backend after changing `.env`. The API key stays exclusively in the backend environment.
 
-## Mode A: Build Your Own Project
+## Mode A — Build Your Own
 
 Generate a roadmap, then choose **Start Milestone**. You can select any milestone, move previous/next, open the full roadmap, or resume the current milestone. Every milestone displays its goal, concepts, expected behaviors, steps, and **provisional AI-generated acceptance criteria**. Existing files are never overwritten; **Begin in a new HTML file** opens an untitled editor that you save yourself.
 
@@ -144,8 +163,8 @@ Follow the [Mode A manual rehearsal](docs/DEMO_SCRIPT.md#mode-a-manual-rehearsal
 # Compile, acceptance checks, seeded-defect validation, progress, UI and controller tests
 npm.cmd test
 
-# Compile the incremental source changes, then run all suites serially (avoids worker contention)
-node node_modules/typescript/bin/tsc -p extension
+# Alternative to npm test: build/stage, then run all Node suites serially
+npm.cmd run build
 node --test --test-concurrency=1 test-runner/tests/*.test.cjs extension/tests/*.test.cjs
 
 # Acceptance and seeded-defect checks only
@@ -160,7 +179,7 @@ npm.cmd run test:seeded
 # Real standalone runner against the reviewed bundled reference
 node test-runner\src\run-tests.cjs test-runner\fixtures\correct add-task --trusted-demo
 
-# Only when a VSIX is present in artifacts/: check it outside repository node_modules
+# Only after npm.cmd run package creates a local VSIX:
 node scripts\verify-package.cjs
 ```
 
@@ -181,7 +200,7 @@ test-runner/              Separate process, real jsdom checks, fixtures and defe
 scripts/                  Build staging, package verification and backend smoke test
 docs/                     Architecture, demo, test coverage, pilot and status
 .vscode/                  F5 launch and build task
-artifacts/                Generated installable VSIX (ignored by git)
+artifacts/                Created by local packaging; absent from GitHub (ignored by git)
 ```
 
 ## What V1 does and does not establish
@@ -198,8 +217,9 @@ Troubleshooting: use `npm.cmd`, open the repository root for F5, rerun `npm.cmd 
 
 ## Project links
 
-- GitHub repository: _add after publication_.
-- Demo video: _add when available_.
-- NEXUS presentation: _add when available_.
+- [GitHub repository](https://github.com/adarshsp18/codesense-ai)
+- [Architecture and trust boundaries](docs/ARCHITECTURE.md)
+- [Test coverage and seeded defects](docs/TEST_COVERAGE.md)
+- [Pilot study plan — no results claimed](docs/PILOT_STUDY.md)
 
-The existing [MIT license](LICENSE) applies to this source. The faculty source ZIP excludes local keys, environments, generated builds and the separately delivered VSIX.
+The [MIT license](LICENSE) applies to this source. Local keys, environments, generated builds and VSIX archives are excluded from Git.

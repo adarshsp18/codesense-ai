@@ -1,6 +1,8 @@
 # Verified suites and seeded-defect validation
 
-The term is **seeded-defect validation**. Known-correct and deliberately broken implementations validate the test suite against the written contract. They do not prove the suite perfect. The suite was reviewed against `shared/guided-projects.json`; no external accreditation or independent review is claimed.
+The term is **seeded-defect validation**. Known-correct and deliberately broken implementations validate the test suite against the written contract. They do not prove the suite perfect. The suite was developer-reviewed against [shared/guided-projects.json](../shared/guided-projects.json); no external accreditation or independent review is claimed.
+
+Latest reported automated results: **68/68 Node tests**, **211/211 Python tests** and **5/5 backend smoke checks**. These were not rerun during this documentation audit. [Implementation status](IMPLEMENTATION_STATUS.md#current-evidence-summary) records the separate manual Extension Development Host demonstrations. Suite totals below describe learner-facing checks, not the number of repository regression tests.
 
 | Requirement | Check ID | Deliberately broken case |
 |---|---|---|
@@ -19,15 +21,15 @@ The term is **seeded-defect validation**. Known-correct and deliberately broken 
 | Enter rejects blanks | enter-rejects-blank | Keyboard handler converts blank into a task |
 | Enter preserves earlier tasks and click still works | enter-preserves | Keyboard handler wipes earlier list items |
 
-Milestone 1 runs 5 checks. Milestone 2 runs those 5 plus 5 interaction checks. Recovery adds 1 description check or 4 Enter checks, giving 6 and 14 respectively. Each check gets fresh DOM state. Source-level defects are in `fixtures/seeded-defects/defects.json`; recovery defects are generated explicitly in `acceptance.test.cjs` with assertions that they target the intended behavior. Correct recovery fixtures are assembled from the reference in the test.
+Milestone 1 runs 5 checks. Milestone 2 runs those 5 plus 5 interaction checks. Recovery adds 1 description check or 4 Enter checks, giving 6 and 14 respectively. Each check gets fresh DOM state. Source-level defects are in [test-runner/fixtures/seeded-defects/defects.json](../test-runner/fixtures/seeded-defects/defects.json); recovery defects are generated explicitly in [test-runner/tests/acceptance.test.cjs](../test-runner/tests/acceptance.test.cjs) with assertions that they target the intended behavior. Correct recovery fixtures are assembled from the reference in the test.
 
 Queries use Testing Library's accessible-role/name and label APIs. The contract explicitly fixes accessible names, native tag types, one text input/button/list, empty initial state and the app.js entry point. It does not fix IDs or variable names. An alternate-ID/ordered-list implementation passes. We deliberately reject custom ARIA role overrides in favor of native semantics for this beginner contract.
 
 Other tests check inline-script contract rejection, runtime errors, code/understanding independence, post-reveal requirements, source invalidation, persistence reconstruction, bounded history, hostile webview messages, escaping model HTML, actual button messages, commands/CSP, and the full offline controller flow with a real child runner. A hanging click handler demonstrates the parent timeout. The worker environment is built from an allowlist; tests also verify that Node globals are not directly supplied to the jsdom context. This is not an escape-resistance claim.
 
-Python tests cover code leakage at levels 1–2, safe fallbacks, bounded retries, valid retry responses, invalid requests, missing keys, no provider invocation in offline mode, custom-roadmap verification labels, complete rubric indexes, exact evidence support, sanitized errors, and browser-origin rejection. Provider responses are mocked; there is no claim of live API success.
+Python tests cover code leakage at levels 1–2, safe fallbacks, bounded retries, valid retry responses, invalid requests, missing keys, no provider invocation in offline mode, custom-roadmap verification labels, complete rubric indexes, exact evidence support, sanitized errors, and browser-origin rejection. Provider responses are mocked; these automated results do not establish live API success. Live Gemini interactions were demonstrated manually, with account access, quota and response-quality limitations still applicable.
 
-The HTTP smoke script launches real Uvicorn and checks health, curriculum, a scripted hint and missing-key roadmap failure. Package verification extracts the VSIX outside the repository and executes its shipped runner to expose missing dependencies.
+The [HTTP smoke script](../scripts/smoke_backend.py) reports five checks: real Uvicorn startup, health, curriculum, a scripted hint and missing-key roadmap failure. AI is disabled for this smoke run. Optional [package verification](../scripts/verify-package.cjs) extracts a locally generated VSIX outside the repository and executes its shipped runner to expose missing dependencies. GitHub contains no prebuilt VSIX; this check requires local packaging first and does not verify clean installation in VS Code.
 
 ## Deliberate coverage limits
 
