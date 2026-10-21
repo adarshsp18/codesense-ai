@@ -149,7 +149,11 @@ def test_gemini_roadmap_schema_and_sdk_request(monkeypatch, gemini, model):
     assert config['responseJsonSchema']['properties']['milestones']['maxItems'] == 5
     assert config['maxOutputTokens'] == 3000
     assert 'tools' not in body
-    assert gemini.options[0].timeout == 12000
+    assert gemini.options[0].timeout == 30000
+    assert request.headers['x-server-timeout'] == '30'
+    assert request.extensions['timeout'] == {
+        'connect': 30.0, 'read': 30.0, 'write': 30.0, 'pool': 30.0,
+    }
     assert gemini.options[0].retry_options.attempts == 1
     assert gemini.factory.call_args.kwargs['vertexai'] is False
 

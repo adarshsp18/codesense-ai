@@ -63,7 +63,7 @@ async def _gemini_generate(schema: type[T], instructions: str, payload: dict) ->
             api_key=os.environ['GEMINI_API_KEY'].strip(),
             vertexai=False,
             http_options=types.HttpOptions(
-                timeout=12000, retry_options=types.HttpRetryOptions(attempts=1),
+                timeout=30000, retry_options=types.HttpRetryOptions(attempts=1),
             ),
         ) as client:
             async with client.aio as async_client:
